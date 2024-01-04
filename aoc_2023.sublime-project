@@ -1,0 +1,59 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+		},
+	],
+	"settings":
+	{
+		"LSP":
+		{
+			"rust-analyzer":
+			{
+				"enabled": true,
+			},
+		},
+	},
+
+    "build_systems":
+    [
+        {
+            "name": "Cargo AOC",
+            "working_dir": "$project_path",
+		    "shell_cmd": "cargo build  2>&1 | awk 'BEGIN { errmsg=\"\" } /(error|warning)(\\[E[0-9]+\\])?:.*/ {errmsg=\\$0; next} / *--> *.*/ { printf \"%s::::%s\\n\", \\$0, errmsg; next} {print \\$0}'",
+			"file_regex": " +--> +([a-zA-Z0-9_\\/.-]+):(\\d+):(\\d+)::::(.*)",
+
+            "variants" : [
+	            {
+	                "name": "Run bin",
+	                "working_dir": "$project_path",
+
+ 				    "shell_cmd": "cargo run --bin $file_base_name 2>&1 | awk 'BEGIN { errmsg=\"\" } /(error|warning)(\\[E[0-9]+\\])?:.*/ {errmsg=\\$0; next} / *--> *.*/ { printf \"%s::::%s\\n\", \\$0, errmsg; next} {print \\$0}'",
+    				"file_regex": " +--> +([a-zA-Z0-9_\\/.-]+):(\\d+):(\\d+)::::(.*)",
+	            },
+	            {
+	                "name": "Test bin",
+	                "working_dir": "$project_path",
+
+ 				    "shell_cmd": "cargo test --bin $file_base_name 2>&1 | awk 'BEGIN { errmsg=\"\" } /(error|warning)(\\[E[0-9]+\\])?:.*/ {errmsg=\\$0; next} / *--> *.*/ { printf \"%s::::%s\\n\", \\$0, errmsg; next} {print \\$0}'",
+    				"file_regex": " +--> +([a-zA-Z0-9_\\/.-]+):(\\d+):(\\d+)::::(.*)",
+	            }
+			],
+        }
+	],
+
+   "debugger_configurations" : [
+        {
+            "name": "LLDB",
+            "type": "lldb",
+            "request": "launch",
+            "xpre_debug_task": "Compile",
+			"program": "${workspaceFolder}/target/debug/day12_2",
+			"cwd": "${workspaceFolder}",
+            "args": [
+			],
+            "terminal": "console",
+        }
+	],
+}
