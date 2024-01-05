@@ -2,7 +2,6 @@ use std::{fs, collections::BinaryHeap};
 
 // 128 mask bits - can fit 10x10 xy dims
 const MASK_WIDTH:i32 = 10;
-const MASK_HEIGHT:i32 = 10;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct Point {
@@ -12,13 +11,6 @@ struct Point {
 }
 
 impl Point {
-    fn zero() -> Point {
-        Point { x: 0, y: 0, z: 0 }
-    }
-    fn at(x: i32, y: i32, z: i32) -> Point {
-        Point { x, y, z }
-    }
-
     fn from_string(s: &str) -> Option<Point> {
         let r = s
             .split_terminator(',')
@@ -44,10 +36,6 @@ struct Brick {
     mask: u128,
 }
 
-fn brick_label(idx: usize) -> char {
-	char::from_u32(65 + idx as u32).unwrap()
-}
-
 impl Brick {
     fn from_string(s: &str) -> Option<Brick> {
 
@@ -68,7 +56,7 @@ impl Brick {
     	let mut m = 0;
     	for y in i32::min(s.y,e.y) ..= i32::max(s.y,e.y) {
 	    	for x in i32::min(s.x,e.x) ..= i32::max(s.x,e.x) {
-	    		m |= 1 << (y * MASK_HEIGHT + x) as usize;
+	    		m |= 1 << (y * MASK_WIDTH + x) as usize;
 	    	}
     	}
 
@@ -101,11 +89,6 @@ fn main() {
 
     		bricks.push(b);
     	}
-    }
-
-    println!("Bricks:");
-    for (i,b) in bricks.iter().enumerate() {
-    	println!("{:4} : {:?} {:X}", i, b, b.mask);
     }
 
     // BItmask of each settled level of pile - level 0 is solid
@@ -141,7 +124,7 @@ fn main() {
     // For each brick - count total other fallers if it is removed
     //
     let mut sum = 0;
-    for (i,b) in bricks.iter().enumerate() {
+    for (_i,b) in bricks.iter().enumerate() {
     	// start with support mask without this brick
     	let mut suppport_mask = pile_masks[b.highest() as usize] & !b.mask;
     	let mut fallers = vec![false; bricks.len()];
@@ -149,7 +132,7 @@ fn main() {
     	// For each layer above
     	for z in 1 + b.highest() as usize .. height as usize {
 
-			// Remove bricks that are no longer supporting from previous layer
+			// Remove bricks from mask that are no longer supporting from previous layer
 			suppport_mask &= pile_masks[z-1];
 
     		// For each brick in this layer
@@ -163,7 +146,7 @@ fn main() {
 					suppport_mask &= !bricks[ub].mask;
 					fallers[ub] = true;
 				} else {
-					// This brick will not fall - add it from mask
+					// This brick will not fall - add it to mask
 					suppport_mask |= bricks[ub].mask;
 				}
     		}
@@ -172,7 +155,6 @@ fn main() {
 	   	// Count fallers
 	   	//
 	   	let fallers = fallers.into_iter().filter(|&b| b).count();
-	   	println!("Fallers for {} = {}", i, fallers);
 	   	sum += fallers;
     }
 

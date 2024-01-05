@@ -28,28 +28,10 @@ struct Cmd {
 	colour: Colour
 }
 
-#[derive(Debug)]
-struct Grid {
-	width: usize,
-	height: usize,
-	elements: Vec<bool>,
-	colours: Vec<Colour>,
-}
-
-impl Grid {
-	fn create(width:usize, height:usize) -> Grid {
-		Grid {
-			width, height,
-			elements: vec![false; width * height],
-			colours: vec![Colour(0,0,0); width * height],
-		}
-	}
-}
-
 fn apply_commands<F>(commands: &[Cmd], mut func: F)
 	where F: FnMut(i32, i32, i32, Colour) {
-	let mut x = 1000;
-	let mut y = 1000;
+	let mut x = 0;
+	let mut y = 0;
 
 	for c in commands {
 		match c.cmd {
@@ -80,18 +62,17 @@ fn main() {
 		commands.push(Cmd { cmd, distance: dist, colour });
     }
 
-    let mut px = 1000;
-    let mut py = 1000;
+    let mut px = 0;
+    let mut py = 0;
     let mut area = 0;
     let mut distance = 0;
-    apply_commands(&commands, |x,y,d,c| {
-    	if(y > py) {
+    apply_commands(&commands, |x,y,d,_c| {
+    	if y > py {
     		area += (y-py) * x;
-    	} else if (y < py) {
+    	} else if y < py {
     		area += (y-py) * x;
 	   	}
     	distance += d;
-//    	println!("{} {}",x, y);
     	(px,py) = (x,y);
     });
 

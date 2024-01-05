@@ -15,6 +15,7 @@ impl Particle {
 		let (dx,dy) = (p1x - p0x, p1y - p0y);
 		let mut det = v1x * v0y - v1y * v0x;
 		if det != 0 {
+			// Numerators of u,v
 			let mut u_n = dy * v1x - dx * v1y;
 			let v_n = dy * v0x - dx * v0y;
 

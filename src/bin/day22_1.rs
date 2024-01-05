@@ -68,7 +68,7 @@ impl Brick {
     	let mut m = 0;
     	for y in i32::min(s.y,e.y) ..= i32::max(s.y,e.y) {
 	    	for x in i32::min(s.x,e.x) ..= i32::max(s.x,e.x) {
-	    		m |= 1 << (y * MASK_HEIGHT + x) as usize;
+	    		m |= 1 << (y * MASK_WIDTH + x) as usize;
 	    	}
     	}
 
@@ -103,12 +103,7 @@ fn main() {
     	}
     }
 
-    // println!("Bricks:");
-    // for (i,b) in bricks.iter().enumerate() {
-    // 	println!("{:4} : {:?} {:X}", i, b, b.mask);
-    // }
-
-    // BItmask of each settled level of pile - level 0 is solid
+    // Bitmask of each settled level of pile - level 0 is solid
     let mut pile_masks = vec![0; height as usize];
     pile_masks[0] = ! 0  as u128;
 
@@ -138,15 +133,10 @@ fn main() {
 
     }
 
-    // println!("Settled:");
-    // for (i,b) in bricks.iter().enumerate() {
-    // 	println!("{} : {:?} {:X}", brick_label(i), b, b.mask);
-    // }
-
     let mut count = 0;
     // Find bricks that cannot be removed .. are any bricks in layer above only suppored
     // by this one?
-    'outer: for (i,b) in bricks.iter().enumerate() {
+    'outer: for (_i,b) in bricks.iter().enumerate() {
     	// Mask of support provided by all bricks at top level of this brick - without
     	// this brick
     	let suppport_mask = pile_masks[b.highest() as usize] & !b.mask;

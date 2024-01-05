@@ -32,8 +32,8 @@ fn cmd_from_colour(s: &str) -> Option<(char, usize)> {
 
 fn apply_commands<F>(commands: &[Cmd], mut func: F)
 	where F: FnMut(i32, i32, i32) {
-	let mut x = 1000;
-	let mut y = 1000;
+	let mut x = 0;
+	let mut y = 0;
 
 	for c in commands {
 		match c.cmd {
@@ -60,8 +60,8 @@ fn main() {
 		commands.push(Cmd { cmd, distance: dist });
     }
 
-    let mut px = 1000;
-    let mut py = 1000;
+    let mut px = 0;
+    let mut py = 0;
     let mut area:i64 = 0;
     let mut distance = 0;
 
